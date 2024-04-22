@@ -14,54 +14,65 @@ export default function initiTask() {
     const novaTarefa = document.createElement("ul");
     const novaDescricao = document.createElement("li");
 
-    const novoContainer = document.createElement("div");
-    novoContainer.setAttribute("data-contador", "");
-    novoContainer.classList.add("task", "ativo");
+    if (tarefa === "") {
+      input.style.border = "2px solid red";
+      alert("Preencha o título da Tarefa");
+      console.log("vazio");
+    } else {
+      const novoContainer = document.createElement("div");
+      novoContainer.setAttribute("data-contador", "");
+      novoContainer.classList.add("task", "ativo");
 
-    const novaUl = document.createElement("ul");
-    novaUl.setAttribute("data-tarefas-lista", "");
+      const novaUl = document.createElement("ul");
+      novaUl.setAttribute("data-tarefas-lista", "");
 
-    novoContainer.appendChild(novaUl);
-    taskContainer.parentNode.insertBefore(
-      novoContainer,
-      taskContainer.nextElementSibling
-    );
+      novoContainer.appendChild(novaUl);
+      taskContainer.parentNode.insertBefore(
+        novoContainer,
+        taskContainer.nextElementSibling
+      );
 
-    novaTarefa.innerHTML = `${tarefa}`;
-    novaUl.appendChild(novaTarefa);
+      novaTarefa.innerHTML = `${tarefa}`;
+      novaUl.appendChild(novaTarefa);
 
-    novaDescricao.innerHTML = `${descricao}`;
-    novaUl.appendChild(novaDescricao);
+      novaDescricao.innerHTML = `${descricao}`;
+      novaUl.appendChild(novaDescricao);
 
-    novoContainer.addEventListener("click", handleClick);
+      novoContainer.addEventListener("click", handleClick);
 
-    modal.classList.remove("ativo");
-    body.style.display = "block";
-    body.classList.add("body-container");
-    input.style.border = "none";
-    taskContainer.classList.add("ativo");
+      modal.classList.remove("ativo");
+      body.style.display = "block";
+      body.classList.add("body-container");
+      input.style.border = "none";
+      taskContainer.classList.add("ativo");
 
-    btnDelete.addEventListener("click", (event) => {
-      const containerRemover = document.querySelectorAll(".add");
-      containerRemover.forEach((item) => {
-        item.classList.add("remove");
-        setTimeout(() => {
-          item.remove();
-        }, 500);
+      btnDelete.addEventListener("click", (event) => {
+        const containerRemover = document.querySelectorAll(".add");
+        containerRemover.forEach((item) => {
+          item.classList.add("remove");
+          setTimeout(() => {
+            item.remove();
+          }, 500);
+          contador.innerHTML = "(" + (contaContainers() - 1) + ")";
+        });
       });
 
-      contador.innerHTML = "(" + (contaContainers() - 1) + ")";
-    });
-
-    contador.innerHTML = "(" + contaContainers() + ")";
+      contador.innerHTML = "(" + contaContainers() + ")";
+    }
   });
 
   function handleClick(event) {
+    const containerSelecionado = event.currentTarget;
     const todosContainer = document.querySelectorAll("[data-contador]");
-    todosContainer.forEach((item) => {
-      item.classList.remove("add");
-    });
-    event.currentTarget.classList.add("add");
+
+    if (containerSelecionado.classList.contains("add")) {
+      containerSelecionado.classList.remove("add");
+    } else {
+      todosContainer.forEach((item) => {
+        item.classList.remove("add");
+      });
+      containerSelecionado.classList.add("add");
+    }
   }
 
   const contador = document.querySelector("span");
