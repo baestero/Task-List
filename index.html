@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./css/style.css">
+  <title>Task List V2</title>
+</head>
+
+<body>
+  <div data-body class="container">
+    <header class="cabecalho">
+      <div>
+        <p>Olá, user1122</p>
+        <h1>Seus <br> Projetos <span>(0)</span></h1>
+      </div>
+      <img src="./icons/user (1).png" alt="usuario">
+    </header>
+
+    <main class="task-container">
+      <div data-task-container>
+      </div>
+
+
+      <div class="new-task">
+        <img data-newTask src="./icons/add.png" alt="">
+        <img data-delete class="delete" src="./icons/delete.png" alt="">
+      </div>
+    </main>
+
+  </div>
+
+  <section data-modal>
+
+    <div class="modal-container">
+
+      <div class="close-container">
+        <img data-close class="close" src="./icons/cross.png" alt="fechar">
+      </div>
+
+      <h1>Nova Tarefa</h1>
+
+      <div data-add-tarefa class="container-btn">
+        <h2>Adicionar nova tarefa</h2>
+        <img src="./icons/add (1).png" alt="">
+      </div>
+
+
+      <div data-add-tarefa="create" class="create-task">
+        <h3>Título</h3>
+        <input data-input type="text" placeholder="Reservar Hotel">
+        <input data-descricao type="text" placeholder="Descricao (opcional)">
+
+        <div data-create class="create-btn">
+          <h2>Create</h2>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <script type="module" src="./js/script.js"></script>
+</body>
+
+</html>
