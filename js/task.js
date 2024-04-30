@@ -1,4 +1,4 @@
-export default function initiTask() {
+export default function initTask() {
   const tarefas = document.querySelector("[data-input]");
   const descricoes = document.querySelector("[data-descricao]");
   const create = document.querySelector("[data-create]");
@@ -38,44 +38,112 @@ export default function initiTask() {
       novaDescricao.innerHTML = `${descricao}`;
       novaUl.appendChild(novaDescricao);
 
-      novoContainer.addEventListener("click", handleClick);
-
       modal.classList.remove("ativo");
       body.style.display = "block";
       body.classList.add("body-container");
       input.style.border = "none";
       taskContainer.classList.add("ativo");
 
-      btnDelete.addEventListener("click", (event) => {
-        const containerRemover = document.querySelectorAll(".add");
-        containerRemover.forEach((item) => {
-          item.classList.add("remove");
-          setTimeout(() => {
-            item.remove();
-          }, 500);
-          contador.innerHTML = "(" + (contaContainers() - 1) + ")";
-        });
-      });
+      salvarContainer(novoContainer.outerHTML);
 
-      contador.innerHTML = "(" + contaContainers() + ")";
+      atualizarContador();
     }
   });
 
-  function handleClick(event) {
-    const containerSelecionado = event.currentTarget;
-    const todosContainer = document.querySelectorAll("[data-contador]");
+  btnDelete.addEventListener("click", (event) => {
+    const containersSalvos =
+      JSON.parse(localStorage.getItem("containersSalvos")) || [];
 
-    if (containerSelecionado.classList.contains("add")) {
-      containerSelecionado.classList.remove("add");
-    } else {
-      todosContainer.forEach((item) => {
-        item.classList.remove("add");
-      });
-      containerSelecionado.classList.add("add");
+    const containerRemover = document.querySelectorAll(".add");
+    containerRemover.forEach((item) => {
+      item.classList.add("remove");
+      setTimeout(() => {
+        item.remove();
+
+        const dataContadorToRemove = item.getAttribute("data-contador");
+        const index = containersSalvos.findIndex((containerHtml) => {
+          const novoContainer = document.createElement("div");
+          novoContainer.innerHTML = containerHtml;
+          return (
+            novoContainer
+              .querySelector("[data-contador]")
+              .getAttribute("data-contador") === dataContadorToRemove
+          );
+        });
+        if (index !== -1) {
+          containersSalvos.splice(index, 1);
+          localStorage.setItem(
+            "containersSalvos",
+            JSON.stringify(containersSalvos)
+          );
+
+          atualizarContador();
+        }
+      }, 500);
+    });
+  });
+
+  function salvarContainer(containerHtml) {
+    let containersSalvos =
+      JSON.parse(localStorage.getItem("containersSalvos")) || [];
+
+    containersSalvos.push(containerHtml);
+    localStorage.setItem("containersSalvos", JSON.stringify(containersSalvos));
+  }
+
+  function restaurarContainers() {
+    const containersSalvos =
+      JSON.parse(localStorage.getItem("containersSalvos")) || [];
+
+    containersSalvos.forEach((containerHtml) => {
+      const novoContainer = document.createElement("div");
+      novoContainer.innerHTML = containerHtml;
+
+      const taskContainer = document.querySelector("[data-task-container]");
+      taskContainer.parentNode.insertBefore(
+        novoContainer,
+        taskContainer.nextElementSibling
+      );
+
+      const filhoDoNovoContainer = novoContainer.querySelector("div");
+      if (filhoDoNovoContainer) {
+        if (filhoDoNovoContainer.classList.contains("add"))
+          filhoDoNovoContainer.classList.remove("add");
+      }
+    });
+
+    atualizarContador();
+  }
+
+  restaurarContainers();
+
+  function handleClick(event) {
+    const containerSelecionado = event.target.closest("[data-contador]");
+
+    if (
+      containerSelecionado &&
+      containerSelecionado.classList.contains("task")
+    ) {
+      const todosContainer = document.querySelectorAll("[data-contador]");
+
+      if (containerSelecionado.classList.contains("add")) {
+        containerSelecionado.classList.remove("add");
+      } else {
+        todosContainer.forEach((item) => {
+          item.classList.remove("add");
+        });
+        containerSelecionado.classList.add("add");
+      }
     }
   }
 
-  const contador = document.querySelector("span");
+  document.addEventListener("click", handleClick);
+
+  function atualizarContador() {
+    const contador = document.querySelector("span");
+    contador.innerHTML = "(" + contaContainers() + ")";
+  }
+
   function contaContainers() {
     const containers = document.querySelectorAll("[data-contador]");
     return containers.length;
